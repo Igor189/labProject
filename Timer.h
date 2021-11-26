@@ -1,10 +1,9 @@
 #pragma once
 #include <SDL.h>
-class LTimer
+class Timer
 {
 public:
-	//Initializes variables
-	LTimer();
+	Timer();
 
 	//The various clock actions
 	void start();

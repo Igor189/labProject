@@ -58,3 +58,4 @@ bool Texture::loadFromFile(string fileName, SDL_Renderer* Renderer)
 	SDL_FreeSurface(loadedImg);
 	return true;
 }
+

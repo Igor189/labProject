@@ -1,10 +1,15 @@
 #include"Player.h"
 #include<iostream>
-#include<vector>
+#include"Timer.h"
+#include<fstream>
 using namespace std;
+
+
+
 
 SDL_Renderer* Renderer;
 SDL_Window* Window;
+//Texture tileTexture;
 
 bool init()
 {
@@ -57,6 +62,11 @@ void close()
 	IMG_Quit();
 	SDL_Quit();
 }
+
+
+
+
+
 int main(int argc, char* args[])
 {
 	if (!init())
@@ -65,33 +75,43 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		Player play(0,220, "C:/sdl/28_per-pixel_collision_detection/28_per-pixel_collision_detection/dot.bmp",Renderer);
-		SDL_Rect rect{ 0,0,SCREEN_WIDTH,SCREEN_HEIGHT / 2 };
+		Player play(0,220, "hero.png",Renderer);
 		Texture bgTexture;
-		bgTexture.loadFromFile("scale_1200.jpg", Renderer);
-		Object ground(0, 240, "fd48567c46d0f868450a672e3edfd097.jpg", Renderer);
+		bgTexture.loadFromFile("nebo.png", Renderer);
+		Object wall(220, 220, "Bricks.png", Renderer);
+		Object ground(0, 240, "2dplatform.png", Renderer);
+		Object enemy(400, 230, "enemy.png", Renderer);
+		SDL_Rect groundRect{ 0,0,SCREEN_WIDTH,SCREEN_HEIGHT / 2 };
+		SDL_Rect wallRect{ 0,0,20,20 };
+		vector <SDL_Rect> enemies;
+		enemies.push_back(enemy.getCollider());
 		vector<SDL_Rect> collision;
+		collision.push_back(wall.getCollider());
 		collision.push_back(ground.getCollider());
 		int scrollingOffset = 0;
 		bool quit = false;
 		SDL_Event e;
+		Timer stepTimer;
+		//SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 		while (!quit)
-		{
-			while (SDL_PollEvent(&e) != 0)
+		{		
+			while (SDL_PollEvent(&e))
 			{
-				if (e.type == SDL_QUIT)
+				if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
 				{
 					quit = true;
 				}
-				if (e.key.keysym.sym == SDLK_ESCAPE)
-				{
-					quit = true;
-				}
-				play.handleEvent(e);
+				play.handleEvent(e, collision);
 			}
-			play.move(collision);
-			scrollingOffset -= play.getVelX();
-			
+			float timeStep = stepTimer.getTicks() / 1000.f;
+			play.move(collision,timeStep);
+			//play.setCamera(camera);
+			if (checkCollision(enemies, play.getCollider()))
+			{
+				quit = true;
+			}
+			stepTimer.start();
+			scrollingOffset -= play.getVelX()*timeStep;
 			if (scrollingOffset < -bgTexture.getWidth()||scrollingOffset>bgTexture.getWidth())
 			{
 				scrollingOffset = 0;
@@ -101,7 +121,9 @@ int main(int argc, char* args[])
 			bgTexture.render(scrollingOffset, 0,Renderer);
 			bgTexture.render(scrollingOffset + bgTexture.getWidth(), 0,Renderer);
 			bgTexture.render(scrollingOffset - bgTexture.getWidth(), 0, Renderer);
-			ground.render(Renderer,&rect);
+			enemy.render(Renderer);
+			ground.render(Renderer, &groundRect);
+			wall.render(Renderer);
 			play.render(Renderer);
 			SDL_RenderPresent(Renderer);
 		}

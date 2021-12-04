@@ -38,7 +38,7 @@ void Texture::render(int x, int y,SDL_Renderer* Renderer, SDL_Rect* rect)
 	SDL_RenderCopy(Renderer, texture, rect, &renderQuad);
 }
 
-bool Texture::loadFromFile(string fileName, SDL_Renderer* Renderer)
+bool Texture::loadFromFile(string fileName, SDL_Renderer* Renderer,bool colorKey)
 {
 	SDL_Surface* loadedImg = IMG_Load(fileName.c_str());
 	if (loadedImg == NULL)
@@ -46,7 +46,8 @@ bool Texture::loadFromFile(string fileName, SDL_Renderer* Renderer)
 		cerr << "Unable to upload image: " << IMG_GetError() << "\n";
 		return false;
 	}
-	SDL_SetColorKey(loadedImg, SDL_TRUE, SDL_MapRGB(loadedImg->format, 0, 255, 255));
+	if (colorKey)
+	SDL_SetColorKey(loadedImg, SDL_TRUE, SDL_MapRGB(loadedImg->format, 255, 0, 255));
 	texture = SDL_CreateTextureFromSurface(Renderer, loadedImg);
 	if (texture == NULL)
 	{

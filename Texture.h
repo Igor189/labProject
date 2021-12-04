@@ -17,5 +17,5 @@ public:
 	int getWidth();
 	int getHeight();
 	void render(int x, int y, SDL_Renderer* Renderer, SDL_Rect* renderRect = NULL);
-	bool loadFromFile(string fileName, SDL_Renderer* Renderer);
+	bool loadFromFile(string fileName, SDL_Renderer* Renderer, bool colorKey=true);
 };

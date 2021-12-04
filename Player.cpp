@@ -21,7 +21,7 @@ void Player::move(vector<SDL_Rect>& walls,float timeStep)
 {
 	posX += velX*timeStep;
 	Collider.x = posX;
-	if (posX < 0 || posX + PLAYER_WIDTH>SCREEN_WIDTH || checkCollision(walls,Collider))
+	if (posX < 0 || posX + PLAYER_WIDTH>LEVEL_WIDTH || checkCollision(walls,Collider))
 	{
 		posX -=velX*timeStep;
 		Collider.x = posX;
@@ -29,7 +29,7 @@ void Player::move(vector<SDL_Rect>& walls,float timeStep)
 	
 	posY += velY*timeStep;
 	Collider.y = posY;
-	if (posY < 0 || posY + PLAYER_HEIGHT>SCREEN_HEIGHT || checkCollision(walls, Collider))
+	if (posY < 0 || posY + PLAYER_HEIGHT>LEVEL_HEIGHT || checkCollision(walls, Collider))
 	{
 		posY -= velY * timeStep;
 		Collider.y = posY;
@@ -39,9 +39,9 @@ SDL_Rect* Player::getAnim(int frame)
 {
 	return &animation[frame];
 }
-void Player::render(SDL_Renderer* Renderer)
+void Player::render(SDL_Renderer* Renderer,SDL_Rect& camera)
 {
-	objectTexture.render(posX, posY, Renderer, &animation[animFrame]);
+	objectTexture.render(posX-camera.x, posY-camera.y, Renderer, &animation[animFrame]);
 }
 /*Uint32 callback(Uint32 interval, void* param)
 {
@@ -67,6 +67,11 @@ void Player::handleEvent(SDL_Event& e,vector<SDL_Rect>& walls)
 			{
 				posY -= 30;
 				Collider.y = posY;
+				if (checkCollision(walls, Collider))
+				{
+					posY += 30;
+					Collider.y = posY;
+				}
 			}
 			break;
 		case SDLK_LEFT: 

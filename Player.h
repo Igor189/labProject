@@ -16,6 +16,6 @@ public:
 	void move(vector<SDL_Rect>& walls,float timeStep);
 	void handleEvent(SDL_Event& e, vector<SDL_Rect>& walls);
 	SDL_Rect* getAnim(int frame);
-	void render(SDL_Renderer* Renderer);
+	void render(SDL_Renderer* Renderer, SDL_Rect& camera);
 	void setCamera(SDL_Rect& camera);
 };

@@ -16,6 +16,6 @@ public:
 	void free();
 	int getWidth();
 	int getHeight();
-	void render(int x, int y, SDL_Renderer* Renderer, SDL_Rect* renderRect = NULL);
+	void render(int x, int y, SDL_Renderer* Renderer, SDL_Rect* renderRect = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	bool loadFromFile(string fileName, SDL_Renderer* Renderer, bool colorKey=true);
 };

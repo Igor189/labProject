@@ -5,7 +5,9 @@ class Player:public movableObject
 private:
 	const float jumpSpeed;
 	SDL_Rect animation[5];
-	int animFrame;
+	float animFrame;
+	bool changeAnim=false;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 public:
 	Player(int x,int y,string imgName,SDL_Renderer* Renderer);
 	const int VEL = 120;
@@ -18,4 +20,6 @@ public:
 	SDL_Rect* getAnim(int frame);
 	void render(SDL_Renderer* Renderer, SDL_Rect& camera);
 	void setCamera(SDL_Rect& camera);
+	void teleport(SDL_Rect& teleportCollider);
+	void setPos(int x,int y);
 };

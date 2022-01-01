@@ -1,7 +1,7 @@
 #include"movableObject.h"
 
 
-movableObject::movableObject(int x, int y, string imgName, SDL_Renderer* Renderer): Object::Object(x, y, imgName, Renderer),gravity(30)
+movableObject::movableObject(int x, int y, string imgName, SDL_Renderer* Renderer): Object::Object(x, y, imgName, Renderer),gravity(40)
 {
 	velX = 0;
 	velY = 0;

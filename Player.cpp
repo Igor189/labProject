@@ -19,6 +19,10 @@ Player::Player(int x, int y, string imgName, SDL_Renderer* Renderer) :movableObj
 
 void Player::move(vector<SDL_Rect>& walls,float timeStep)
 {
+	if (changeAnim)
+		animFrame += timeStep*3;
+	if (animFrame > 2.5&&changeAnim)
+		animFrame = 0;
 	posX += velX*timeStep;
 	Collider.x = posX;
 	if (posX < 0 || posX + PLAYER_WIDTH>LEVEL_WIDTH || checkCollision(walls,Collider))
@@ -39,9 +43,9 @@ SDL_Rect* Player::getAnim(int frame)
 {
 	return &animation[frame];
 }
-void Player::render(SDL_Renderer* Renderer,SDL_Rect& camera)
+void Player::render(SDL_Renderer* Renderer,SDL_Rect& camera )
 {
-	objectTexture.render(posX-camera.x, posY-camera.y, Renderer, &animation[animFrame]);
+	objectTexture.render(posX-camera.x, posY-camera.y, Renderer, &animation[(int)animFrame],0.0,NULL,flip);
 }
 /*Uint32 callback(Uint32 interval, void* param)
 {
@@ -61,6 +65,7 @@ void Player::handleEvent(SDL_Event& e,vector<SDL_Rect>& walls)
 		{
 		case SDLK_UP:
 			animFrame = 3;
+			//changeAnim = false;
 			SDL_Rect onGroundCollider = Collider;
 			onGroundCollider.y++;
 			if (checkCollision(walls, onGroundCollider))
@@ -75,8 +80,12 @@ void Player::handleEvent(SDL_Event& e,vector<SDL_Rect>& walls)
 			}
 			break;
 		case SDLK_LEFT: 
+			changeAnim = true;
+			flip = SDL_FLIP_HORIZONTAL;
 			velX -= VEL; break;
 		case SDLK_RIGHT: 
+			flip = SDL_FLIP_NONE;
+			changeAnim = true;
 			velX += VEL; break;
 		}
 	}
@@ -88,19 +97,19 @@ void Player::handleEvent(SDL_Event& e,vector<SDL_Rect>& walls)
 			animFrame = 4;
 			velY = gravity;break;
 		case SDLK_LEFT: 
+			changeAnim = false;
 			velX += VEL; break;
 		case SDLK_RIGHT: 
+			changeAnim = false;
 			velX -= VEL; break;
 		}
 	}
 }
 void Player::setCamera(SDL_Rect& camera)
 {
-	//Center the camera over the dot
 	camera.x = (Collider.x + PLAYER_WIDTH / 2) - SCREEN_WIDTH / 2;
 	camera.y = (Collider.y + PLAYER_HEIGHT / 2) - SCREEN_HEIGHT / 2;
 
-	//Keep the camera in bounds
 	if (camera.x < 0)
 	{
 		camera.x = 0;
@@ -118,3 +127,26 @@ void Player::setCamera(SDL_Rect& camera)
 		camera.y = LEVEL_HEIGHT - camera.h;
 	}
 }
+
+void Player::teleport(SDL_Rect& teleportCollider)
+{
+	if (checkCollision(teleportCollider, Collider))
+	{
+		posX = 646;
+		posY = 204;
+		Collider.x = posX;
+		Collider.y = posY;
+	}
+}
+
+void Player::setPos(int x, int y)
+{
+	posX = x;
+	posY = y;
+	Collider.x = x;
+	Collider.y = y;
+	velX = 0;
+	velY = gravity;
+}
+
+

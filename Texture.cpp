@@ -27,7 +27,7 @@ int Texture::getHeight()
 	return height;
 }
 
-void Texture::render(int x, int y,SDL_Renderer* Renderer, SDL_Rect* rect)
+void Texture::render(int x, int y,SDL_Renderer* Renderer, SDL_Rect* rect, double angle , SDL_Point* center , SDL_RendererFlip flip)
 {
 	SDL_Rect renderQuad{ x,y,width,height };
 	if (rect != NULL)
@@ -35,7 +35,7 @@ void Texture::render(int x, int y,SDL_Renderer* Renderer, SDL_Rect* rect)
 		renderQuad.w = rect->w;
 		renderQuad.h = rect->h;
 	}
-	SDL_RenderCopy(Renderer, texture, rect, &renderQuad);
+	SDL_RenderCopyEx(Renderer, texture, rect, &renderQuad, angle, center, flip);
 }
 
 bool Texture::loadFromFile(string fileName, SDL_Renderer* Renderer,bool colorKey)

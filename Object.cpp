@@ -38,3 +38,9 @@ SDL_Rect Object::getCollider()
 	return Collider;
 }
 
+void Object::setCollider(int h, int w)
+{
+	Collider.h = h;
+	Collider.w = w;
+}
+

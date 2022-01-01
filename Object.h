@@ -14,4 +14,5 @@ public:
 	int getX();
 	int getY();
 	SDL_Rect getCollider();
+	void setCollider(int h, int w);
 };
